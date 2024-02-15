@@ -26,7 +26,7 @@ pipeline {
         }
 	stage('Deployment') {
 	   steps {
-		sh 'sshpass -p shivabook scp target/gamutkart.war shivatbook@172.31.81.38:/home/shivabook/apache-tomcat-9.0.85/webapps'
+		sh 'sshpass -p shivabook scp target/addressbook.war shivatbook@172.31.81.38:/home/shivabook/apache-tomcat-9.0.85/webapps'
 	}
     }
 }
