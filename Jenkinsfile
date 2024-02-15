@@ -1,30 +1,33 @@
 pipeline {
     agent any
-    
-    tools {
-        maven 'M2_HOME'
-    }
 
     stages {
-        stage('Checkout') {
+        stage('Clone-Repo') {
+	    	steps {
+	        	checkout scm
+	    	}
+        }
+	 stage ('Build'){
+	        steps {
+			sh 'mvn clean install'
+                }
+	}
+
+	stage('Run Tests') {
+	    steps {
+	       sh 'mvn test'
+	    }
+	}
+
+        stage('Package as WAR') {
             steps {
-            checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/devopscbabu/DevOpsAddressBook.git']]])
+                sh 'mvn package'
             }
         }
-        stage('Compile') {
-            steps {
-            sh 'mvn clean compile'
-            }
-        }  
-        stage('Test') {
-            steps {
-            sh 'mvn test'
-            }
-        }
-        stage('Package') {
-            steps {
-            sh 'mvn clean package'
-            }
-        }    
+	stage('Deployment') {
+	   steps {
+		sh 'sshpass -p shivabook scp target/gamutkart.war shivatbook@172.31.81.38:/home/shivatomcat/apache-tomcat-9.0.85/webapps'
+	}
     }
+}
 }
